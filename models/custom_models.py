@@ -13,5 +13,5 @@ class MyModel(BaseModel):
     def save(self, *args, **kwargs):
         pass
 
-    def predict(self, *args, **kwargs):
+    def predict(self, data, *args, **kwargs):
         pass

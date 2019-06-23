@@ -17,5 +17,5 @@ class BaseModel(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def predict(self, *args, **kwargs):
+    def predict(self, data, *args, **kwargs):
         pass
