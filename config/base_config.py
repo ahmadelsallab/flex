@@ -3,7 +3,7 @@
 import pandas as pd
 import warnings
 import yaml
-class Config:
+class Configuration:
     # TODO: add **kwargs to support any experiment parameters other than the given ones. It should be a dict.
     def __init__(self, meta_data=None, config=None, results=None, csv_file=None, orig_df=None, yaml_file=None):
         """
@@ -131,7 +131,7 @@ class Config:
 
         return exp_df
 
-class DLConfig(Config):
+class DLConfiguration(Configuration):
 
     def _init_(self, yaml_file=None, meta_data=None, config=None, results=None):
         """
