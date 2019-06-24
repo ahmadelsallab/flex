@@ -1,7 +1,7 @@
 from mlfmwk.config.base_config import Configuration
 from mlfmwk.data.custom_loaders import MyDataLoader
 from mlfmwk.data.custom_preprocessors import MyDataPreprocessor
-from mlfmwk.experiments.base_experiment import Experiment
+from mlfmwk.runs.base_runner import Runner
 from mlfmwk.learners.custom_learners import MyLearner
 from mlfmwk.models.custom_models import MyModel
 
@@ -35,9 +35,9 @@ learner = MyLearner(config=config)
 
 
 # Run experiment
-experiment = Experiment(loader=loader,
-                        preprocessor=preprocessor,
-                        model=model,
-                        learner=learner,
-                        config=config)
+experiment = Runner(loader=loader,
+                    preprocessor=preprocessor,
+                    model=model,
+                    learner=learner,
+                    config=config)
 experiment.run()

@@ -5,7 +5,7 @@ from mlfmwk.learners.base_learner import BaseLearner
 from mlfmwk.models.base_model import BaseModel
 
 
-class Experiment:
+class Runner:
     def __init__(self,
                  loader: BaseDataLoader,
                  preprocessor: BaseDataPreprocessor,
@@ -39,7 +39,7 @@ class Experiment:
         self.learner.test(test_data=test_data, model=model)
 
         # Predict
-        self.model.predict()
+        #self.model.predict()
 
         # Load results
         self.config.to_csv(csv_file='results.csv')

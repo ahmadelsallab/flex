@@ -13,16 +13,16 @@ class Configuration:
         :type config: dict
         :param results: the current experiment results
         :type results: dict
-        :param csv_file: full file path of the old experiments params as csv. If given it overrides orig_df
+        :param csv_file: full file path of the old runs params as csv. If given it overrides orig_df
         :type csv_file: string
-        :param orig_df: the old experiments params as DataFrame. This df will be merged to new experiment, new columns will be added with NaN in old records, but old wont be deleted.
+        :param orig_df: the old runs params as DataFrame. This df will be merged to new experiment, new columns will be added with NaN in old records, but old wont be deleted.
         :type orig_df: DataFrame
         :param yaml_file: full file path of the current experiment yaml. Must have meta_data, config and results. If given, it overrides the other args.
         :type yaml_file: string
 
         """
 
-        # Load old experiments
+        # Load old runs
         if csv_file:
             self.from_csv(csv_file)
 
@@ -32,7 +32,7 @@ class Configuration:
         else: # No records exist
 
             self.df = pd.DataFrame()
-            warnings.warn(UserWarning("No old experiments records given. It's OK if this is the first record or you will add later using from_csv or from_df. Otherwise, old records they will be overwritten"))
+            warnings.warn(UserWarning("No old runs records given. It's OK if this is the first record or you will add later using from_csv or from_df. Otherwise, old records they will be overwritten"))
 
         # Log an experiment if yaml or exp attribs given is given
         if yaml_file or (meta_data and config and results):
@@ -63,17 +63,17 @@ class Configuration:
     def log_experiment(self, meta_data=None, config=None, results=None, yaml_file=None):
 
         # Build the log experiment df
-        exp_df = self.exp_to_df(meta_data, config, results, yaml_file)
+        exp_df = self.to_df(meta_data, config, results, yaml_file)
 
         # Append the current experiment to old records
         self.df = pd.concat([self.df, exp_df], axis=0, ignore_index=True, sort=False)
 
-    def exp_to_df(self, meta_data=None, config=None, results=None, yaml_file=None):
+    def to_df(self, meta_data=None, config=None, results=None, yaml_file=None):
         if yaml_file:
             exp_df = self.from_yaml(yaml_file)
 
         else:
-            # Load experiments data:
+            # Load runs data:
             assert isinstance(meta_data, dict), "Meta data must a dictionary."
             assert isinstance(config, dict), "Config must a dictionary."
             assert isinstance(results, dict), "Results must a dictionary."
@@ -86,8 +86,8 @@ class Configuration:
     def to_csv(self, csv_file):
         """
         Writes the whole experiment data frame to csv_file
-        Warning: if the csv_file has old experiments they will be overwritten.
-        To avoid that, first load the old experiments records using from_csv method.
+        Warning: if the csv_file has old runs they will be overwritten.
+        To avoid that, first load the old runs records using from_csv method.
 
         :param csv_file: full file path
         :type csv_file: string
@@ -125,7 +125,7 @@ class Configuration:
         """
 
 
-        exp_df = self.exp_to_df(meta_data, config, results, yaml_file=None)
+        exp_df = self.to_df(meta_data, config, results, yaml_file=None)
         with open(yaml_file, 'wt') as f:
             yaml.dump(exp_df.iloc[-1].to_dict(), f, default_flow_style=False)
 
