@@ -1,0 +1,84 @@
+AUC: !!python/object/apply:numpy.core.multiarray.scalar
+- &id001 !!python/object/apply:numpy.dtype
+  args:
+  - f8
+  - 0
+  - 1
+  state: !!python/tuple
+  - 3
+  - <
+  - null
+  - null
+  - null
+  - -1
+  - -1
+  - 0
+- !!binary |
+  uB6F61G47j8=
+Comment: Accuracy improved a lot. The targets have lots of 0's that's why it's hard
+  to get high regression accuracy.
+Commit: '-'
+Description: LSTM_Huge model_Big data binary_crossentropy
+Features: comment_text
+Model file: jigsaw_lstm_1.h5
+Name: LSTM_Huge model_Big data binary_crossentropy
+Purpose: LSTM_Huge model_Big data binary_crossentropy
+Run file: jigsaw_lstm.ipynb
+Size: !!python/object/apply:numpy.core.multiarray.scalar
+- &id002 !!python/object/apply:numpy.dtype
+  args:
+  - i8
+  - 0
+  - 1
+  state: !!python/tuple
+  - 3
+  - <
+  - null
+  - null
+  - null
+  - -1
+  - -1
+  - 0
+- !!binary |
+  SoobAAAAAAA=
+Train_test_split: !!python/object/apply:numpy.core.multiarray.scalar
+- *id001
+- !!binary |
+  mpmZmZmZyT8=
+Val acc: !!python/object/apply:numpy.core.multiarray.scalar
+- *id001
+- !!binary |
+  uB6F61G47j8=
+batch_size: !!python/object/apply:numpy.core.multiarray.scalar
+- *id002
+- !!binary |
+  AAEAAAAAAAA=
+dense: LSTM (1000) - 500-200-100
+dropout: !!python/object/apply:numpy.core.multiarray.scalar
+- *id001
+- !!binary |
+  AAAAAAAA0D8=
+embedding_size: !!python/object/apply:numpy.core.multiarray.scalar
+- *id002
+- !!binary |
+  LAEAAAAAAAA=
+epochs: !!python/object/apply:numpy.core.multiarray.scalar
+- *id002
+- !!binary |
+  BQAAAAAAAAA=
+filters: '-'
+kernel_size: '-'
+lr: !!python/object/apply:numpy.core.multiarray.scalar
+- *id001
+- !!binary |
+  /Knx0k1iUD8=
+lstm_output_size: !!python/object/apply:numpy.core.multiarray.scalar
+- *id002
+- !!binary |
+  6AMAAAAAAAA=
+maxlen: !!python/object/apply:numpy.core.multiarray.scalar
+- *id002
+- !!binary |
+  PQEAAAAAAAA=
+pool_size: '-'
+type: adam

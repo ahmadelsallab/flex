@@ -13,13 +13,13 @@ class Configuration:
         :type meta_data: dict
         :param params: the current experiment params/hyper parameters
         :type params: dict
-        :param performance: the current experiment results
+        :param performance: the current experiment performance
         :type performance: dict
         :param csv_file: full file path of the old runs params as csv. If given it overrides orig_df
         :type csv_file: string
         :param orig_df: the old runs params as DataFrame. This df will be merged to new experiment, new columns will be added with NaN in old records, but old wont be deleted.
         :type orig_df: DataFrame
-        :param yaml_file: full file path of the current experiment yaml. Must have meta_data, params and results. If given, it overrides the other args.
+        :param yaml_file: full file path of the current experiment yaml. Must have meta_data, params and performance. If given, it overrides the other args.
         :type yaml_file: string
 
         """
@@ -62,26 +62,26 @@ class Configuration:
     def from_df(self, old_df):
         self.df = old_df
 
-    def log(self, meta_data=None, config=None, results=None, yaml_file=None):
+    def log(self, meta_data=None, params=None, performance=None, yaml_file=None):
 
         # Build the log experiment df
-        exp_df = self.to_df(meta_data, config, results, yaml_file)
+        exp_df = self.to_df(meta_data, params, performance, yaml_file)
 
         # Append the current experiment to old records
         self.df = pd.concat([self.df, exp_df], axis=0, ignore_index=True, sort=False)
 
-    def to_df(self, meta_data=None, config=None, results=None, yaml_file=None):
+    def to_df(self, meta_data=None, params=None, performance=None, yaml_file=None):
         if yaml_file:
             exp_df = self.from_yaml(yaml_file)
 
         else:
             # Load runs data:
             assert isinstance(meta_data, dict), "Meta data must a dictionary."
-            assert isinstance(config, dict), "Config must a dictionary."
-            assert isinstance(results, dict), "Results must a dictionary."
+            assert isinstance(params, dict), "Config must a dictionary."
+            assert isinstance(performance, dict), "Results must a dictionary."
 
-            # Concatenate all experiment parameters (meta, configs and results) along their columns. This will be one entry DataFrame.
-            exp_df = pd.concat([pd.DataFrame([meta_data]), pd.DataFrame([config]), pd.DataFrame([results])], axis=1)
+            # Concatenate all experiment parameters (meta, configs and performance) along their columns. This will be one entry DataFrame.
+            exp_df = pd.concat([pd.DataFrame([meta_data]), pd.DataFrame([params]), pd.DataFrame([performance])], axis=1)
 
         return exp_df
 
@@ -111,15 +111,15 @@ class Configuration:
         with open(yaml_file, 'r') as f:
             exp_df = pd.DataFrame(yaml.load(f), index=[0])
         return exp_df
-    def to_yaml(self, meta_data, config, results, yaml_file):
+    def to_yaml(self, meta_data, params, performance, yaml_file):
         """ Write yaml from experiment df
 
         :param meta_data: exp_df meta
         :type meta_data: DataFrame
-        :param config: exp_df configs
-        :type config: DataFrame
-        :param results: exp_df results
-        :type results: DataFrame
+        :param params: exp_df configs
+        :type params: DataFrame
+        :param performance: exp_df performance
+        :type performance: DataFrame
         :param yaml_file: the output file to save yaml (full path)
         :type yaml_file: string
         :return:
@@ -127,7 +127,7 @@ class Configuration:
         """
 
 
-        exp_df = self.to_df(meta_data, config, results, yaml_file=None)
+        exp_df = self.to_df(meta_data, params, performance, yaml_file=None)
         with open(yaml_file, 'wt') as f:
             yaml.dump(exp_df.iloc[-1].to_dict(), f, default_flow_style=False)
 

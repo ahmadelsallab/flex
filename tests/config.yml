@@ -1,0 +1,25 @@
+AUC: 0.96
+Comment: Accuracy improved a lot. The targets have lots of 0's that's why it's hard
+  to get high regression accuracy.
+Commit: '-'
+Description: LSTM_Huge model_Big data binary_crossentropy
+Features: comment_text
+Model file: jigsaw_lstm_1.h5
+Name: LSTM_Huge model_Big data binary_crossentropy
+Purpose: LSTM_Huge model_Big data binary_crossentropy
+Run file: jigsaw_lstm.ipynb
+Size: 1804874
+Train_test_split: 0.2
+Val acc: 0.96
+batch_size: 256
+dense: LSTM (1000) - 500-200-100
+dropout: 0.25
+embedding_size: 300
+epochs: 5
+filters: '-'
+kernel_size: '-'
+lr: 0.001
+lstm_output_size: 1000
+maxlen: 317
+pool_size: '-'
+type: adam

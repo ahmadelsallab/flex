@@ -1,12 +1,12 @@
 # This file uses the same run() sequennce in the base runner
 
-from mlfmwk.data.custom_loaders import MyDataLoader
-from mlfmwk.data.custom_preprocessors import MyDataPreprocessor
-from mlfmwk.learners.custom_learners import MyLearner
-from mlfmwk.models.custom_models import MyModel
-from mlfmwk.utils.runs import Runner
+from ..data.custom_loaders import MyDataLoader
+from ..data.custom_preprocessors import MyDataPreprocessor
+from ..learners.custom_learners import MyLearner
+from ..models.custom_models import MyModel
+from flex.flex.runs import Runner
 
-from mlfmwk.configs.custom_config import config # Note that, we could directly put the config here, but it can also be kept under configs as it can be used with other runs
+from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 # Load data
 loader = MyDataLoader(config=config)

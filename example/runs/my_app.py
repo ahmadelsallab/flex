@@ -1,11 +1,11 @@
 # This file uses the same run() sequence in the base app
 
-from mlfmwk.data.custom_loaders import MyDataLoader
-from mlfmwk.data.custom_preprocessors import MyDataPreprocessor
-from mlfmwk.models.custom_models import MyModel
-from mlfmwk.utils.runs import Application
+from ..data.custom_loaders import MyDataLoader
+from ..data.custom_preprocessors import MyDataPreprocessor
+from ..models.custom_models import MyModel
+from flex.flex.runs import Application
 
-from mlfmwk.configs.custom_config import config # Note that, we could directly put the config here, but it can also be kept under configs as it can be used with other runs
+from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 class MyApp(Application):
 

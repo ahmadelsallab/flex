@@ -1,4 +1,4 @@
-from mlfmwk.utils.data import BaseDataPreprocessor
+from flex.flex.data import BaseDataPreprocessor
 
 
 class MyDataPreprocessor(BaseDataPreprocessor):

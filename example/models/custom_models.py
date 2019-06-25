@@ -1,4 +1,4 @@
-from mlfmwk.utils.models import BaseModel
+from flex.flex.models import BaseModel
 
 class MyModel(BaseModel):
     def __init__(self, config):

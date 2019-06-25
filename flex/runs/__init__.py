@@ -1,9 +1,9 @@
-from mlfmwk.utils.data import BaseDataPreprocessor
+from flex.utils.data import BaseDataPreprocessor
 
-from mlfmwk.utils.config.base_config import Configuration
-from mlfmwk.utils.data.base_loaders import BaseDataLoader
-from mlfmwk.utils.learners.base_learner import BaseLearner
-from mlfmwk.utils.models.base_model import BaseModel
+from flex.utils.config.base_config import Configuration
+from flex.utils.data.base_loaders import BaseDataLoader
+from flex.utils.learners.base_learner import BaseLearner
+from flex.utils.models.base_model import BaseModel
 
 
 class Application:
@@ -71,6 +71,6 @@ class Runner:
         # Predict
         #self.model.predict()
 
-        # Load results
-        self.config.to_csv(csv_file='../../runs/results.csv')
+        # Load performance
+        self.config.to_csv(csv_file='../../runs/performance.csv')
 

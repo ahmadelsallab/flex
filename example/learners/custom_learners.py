@@ -1,4 +1,4 @@
-from mlfmwk.utils.learners import BaseLearner
+from flex.flex.learners import BaseLearner
 
 class MyLearner(BaseLearner):
     def __init__(self, config):

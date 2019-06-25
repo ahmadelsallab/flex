@@ -1,5 +1,5 @@
 
-from mlfmwk.utils.config import Configuration
+from flex.flex.config import Configuration
 
 # Configure
 meta = {'name': 'exp1',
