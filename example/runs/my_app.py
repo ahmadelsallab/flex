@@ -21,7 +21,7 @@ class MyApp(Application):
         # Load data
         raw_data = self.loader.load_data()
 
-        # Preprocess data
+        # Pre-process data
         data = self.preprocessor.preprocess_data(raw_data)
 
         # Load model
@@ -43,7 +43,8 @@ model = MyModel(config=config)
 
 # Run experiment
 app = MyApp(loader=loader,
-                    preprocessor=preprocessor,
-                    model=model,
-                    config=config)
+            preprocessor=preprocessor,
+            model=model,
+            config=config)
+
 results = app.run()
