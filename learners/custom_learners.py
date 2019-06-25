@@ -1,4 +1,4 @@
-from mlfmwk.learners.base_learner import BaseLearner
+from mlfmwk.utils.learners import BaseLearner
 
 class MyLearner(BaseLearner):
     def __init__(self, config):

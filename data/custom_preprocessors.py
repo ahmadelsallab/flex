@@ -1,4 +1,6 @@
-from mlfmwk.data.base_preprocessors import BaseDataPreprocessor
+from mlfmwk.utils.data import BaseDataPreprocessor
+
+
 class MyDataPreprocessor(BaseDataPreprocessor):
     def __init__(self, config):
         super().__init__(config)

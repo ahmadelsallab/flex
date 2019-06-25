@@ -1,4 +1,4 @@
-from mlfmwk.models.base_model import BaseModel
+from mlfmwk.utils.models import BaseModel
 
 class MyModel(BaseModel):
     def __init__(self, config):

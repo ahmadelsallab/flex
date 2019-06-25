@@ -5,19 +5,21 @@ import warnings
 import yaml
 class Configuration:
     # TODO: add **kwargs to support any experiment parameters other than the given ones. It should be a dict.
-    def __init__(self, meta_data=None, config=None, results=None, csv_file=None, orig_df=None, yaml_file=None):
+    # TODO: csv_file and orig_df should be combined in 'prev_logs', and internal type checking to be done
+    # TODO: yaml_file should be renamed into config_file and extension checked internally
+    def __init__(self, meta_data=None, params=None, performance=None, csv_file=None, orig_df=None, yaml_file=None):
         """
         :param meta_data: the current experiment meta_data
         :type meta_data: dict
-        :param config: the current experiment config/hyper parameters
-        :type config: dict
-        :param results: the current experiment results
-        :type results: dict
+        :param params: the current experiment params/hyper parameters
+        :type params: dict
+        :param performance: the current experiment results
+        :type performance: dict
         :param csv_file: full file path of the old runs params as csv. If given it overrides orig_df
         :type csv_file: string
         :param orig_df: the old runs params as DataFrame. This df will be merged to new experiment, new columns will be added with NaN in old records, but old wont be deleted.
         :type orig_df: DataFrame
-        :param yaml_file: full file path of the current experiment yaml. Must have meta_data, config and results. If given, it overrides the other args.
+        :param yaml_file: full file path of the current experiment yaml. Must have meta_data, params and results. If given, it overrides the other args.
         :type yaml_file: string
 
         """
@@ -35,8 +37,8 @@ class Configuration:
             warnings.warn(UserWarning("No old runs records given. It's OK if this is the first record or you will add later using from_csv or from_df. Otherwise, old records they will be overwritten"))
 
         # Log an experiment if yaml or exp attribs given is given
-        if yaml_file or (meta_data and config and results):
-            self.log_experiment(meta_data, config, results, yaml_file)
+        if yaml_file or (meta_data and params and performance):
+            self.log(meta_data, params, performance, yaml_file)
 
     def __str__(self):
         # FIXME
@@ -60,7 +62,7 @@ class Configuration:
     def from_df(self, old_df):
         self.df = old_df
 
-    def log_experiment(self, meta_data=None, config=None, results=None, yaml_file=None):
+    def log(self, meta_data=None, config=None, results=None, yaml_file=None):
 
         # Build the log experiment df
         exp_df = self.to_df(meta_data, config, results, yaml_file)
@@ -78,7 +80,7 @@ class Configuration:
             assert isinstance(config, dict), "Config must a dictionary."
             assert isinstance(results, dict), "Results must a dictionary."
 
-            # Concatenate all experiment parameters (meta, config and results) along their columns. This will be one entry DataFrame.
+            # Concatenate all experiment parameters (meta, configs and results) along their columns. This will be one entry DataFrame.
             exp_df = pd.concat([pd.DataFrame([meta_data]), pd.DataFrame([config]), pd.DataFrame([results])], axis=1)
 
         return exp_df
@@ -114,7 +116,7 @@ class Configuration:
 
         :param meta_data: exp_df meta
         :type meta_data: DataFrame
-        :param config: exp_df config
+        :param config: exp_df configs
         :type config: DataFrame
         :param results: exp_df results
         :type results: DataFrame

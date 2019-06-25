@@ -1,4 +1,6 @@
-from mlfmwk.data.base_loaders import  BaseDataLoader
+from mlfmwk.utils.data import  BaseDataLoader
+
+
 class MyDataLoader(BaseDataLoader):
     def __init__(self, config):
         super().__init__(config)

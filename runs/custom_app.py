@@ -1,24 +1,11 @@
-from mlfmwk.config.base_config import Configuration
+# This file uses the same run() sequence in the base app
+
 from mlfmwk.data.custom_loaders import MyDataLoader
 from mlfmwk.data.custom_preprocessors import MyDataPreprocessor
-from mlfmwk.runs.base_app import Application
 from mlfmwk.models.custom_models import MyModel
+from mlfmwk.utils.runs import Application
 
-# Configure
-meta = {'name': 'exp1',
-        'objective': 'test'}
-
-config = {'optimizer': 'Adam',
-          'lr': 0.1,
-          'batch_size': 128,
-          'lstm_size': 100,
-          'data_path':'../dat/'}
-
-results = {'acc': 0.99,
-           'comment': 'Best model'}
-
-# Form config
-config = Configuration(meta_data=meta, config=config, results=results)
+from mlfmwk.configs.custom_config import config # Note that, we could directly put the config here, but it can also be kept under configs as it can be used with other runs
 
 # Load data
 loader = MyDataLoader(config=config)
