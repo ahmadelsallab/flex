@@ -10,12 +10,16 @@ Framework for machine Learning EXperiment
 - Utils for models, data loaders, data preprocessing, text, image, ...etc.
 
 # Installation
-! pip install --upgrade git+https://github.com/ahmadelsallab/flex.git
+```
+pip install --upgrade git+https://github.com/ahmadelsallab/flex.git
+```
 
 Or 
-
-!git clone https://github.com/ahmadelsallab/flex.git
-!cd ml_logger && pip install .
+```
+git clone https://github.com/ahmadelsallab/flex.git
+cd ml_logger
+pip install .
+```
 # Requirements
 pip install requirements.txt
 
