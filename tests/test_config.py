@@ -114,11 +114,11 @@ class TestExperiment(TestCase):
         :return: Expected internal df = old csv + logged data
         :rtype:
         """
-        experiment = Configuration(csv_file='results_old.csv', yaml_file='params.yml')
+        experiment = Configuration(csv_file='results_old.csv', yaml_file='config.yml')
         self.assertFalse(experiment.df.empty)
 
 
-        with open('params.yml', 'r') as f:
+        with open('config.yml', 'r') as f:
             exp_df = pd.DataFrame(yaml.load(f), index=[0])
 
         old_df = pd.read_csv('results_old.csv')
@@ -132,10 +132,10 @@ class TestExperiment(TestCase):
         :rtype:
         """
         with self.assertWarns(UserWarning):
-            experiment = Configuration(yaml_file='params.yml')
+            experiment = Configuration(yaml_file='config.yml')
             self.assertFalse(experiment.df.empty)
 
-            with open('params.yml', 'r') as f:
+            with open('config.yml', 'r') as f:
                 exp_df = pd.DataFrame(yaml.load(f), index=[0])
 
             self.assertTrue(exp_df.equals(experiment.df))
@@ -270,9 +270,9 @@ class TestExperiment(TestCase):
 
         experiment = Configuration(csv_file='results_old.csv')
         self.assertFalse(experiment.df.empty)
-        experiment.log(yaml_file='params.yml')
+        experiment.log(yaml_file='config.yml')
 
-        with open('params.yml', 'r') as f:
+        with open('config.yml', 'r') as f:
             exp_df = pd.DataFrame(yaml.load(f), index=[0])
 
         old_df = pd.read_csv('results_old.csv')
@@ -288,9 +288,9 @@ class TestExperiment(TestCase):
 
         experiment = Configuration()
         self.assertTrue(experiment.df.empty)
-        experiment.log(yaml_file='params.yml')
+        experiment.log(yaml_file='config.yml')
 
-        with open('params.yml', 'r') as f:
+        with open('config.yml', 'r') as f:
             exp_df = pd.DataFrame(yaml.load(f), index=[0])
 
         self.assertTrue(exp_df.equals(experiment.df))
@@ -353,9 +353,9 @@ class TestExperiment(TestCase):
         :return:
         :rtype:
         """
-        experiment = Configuration(csv_file='performance.csv')
-        experiment.to_csv('performance.csv')
-        df = pd.read_csv('performance.csv')
+        experiment = Configuration(csv_file='results.csv')
+        experiment.to_csv('results.csv')
+        df = pd.read_csv('results.csv')
         self.assertTrue(df.equals(experiment.df))
 
     def test_new_logged_exp_to_csv(self):
@@ -364,8 +364,8 @@ class TestExperiment(TestCase):
         :return:
         :rtype:
         """
-        experiment = Configuration(csv_file='performance.csv')
-        experiment.to_csv('performance.csv')
+        experiment = Configuration(csv_file='results.csv')
+        experiment.to_csv('results.csv')
 
         old_df = pd.read_csv('results_old.csv')
         meta_df, config_df, results_df = self.df_to_exp_attribs(old_df)
@@ -382,8 +382,8 @@ class TestExperiment(TestCase):
         df = pd.concat([old_df, exp_df], axis=0, ignore_index=True, sort=False)
         self.assertTrue(df.equals(experiment.df))
 
-        experiment.to_csv('performance.csv')
-        df = pd.read_csv('performance.csv')
+        experiment.to_csv('results.csv')
+        df = pd.read_csv('results.csv')
         self.assertTrue(df.equals(experiment.df))
 
     def test_from_yaml(self):
@@ -393,8 +393,8 @@ class TestExperiment(TestCase):
         :rtype: DataFrame
         """
         experiment = Configuration()
-        exp_df = experiment.from_yaml('params.yml')
-        with open('params.yml', 'r') as f:
+        exp_df = experiment.from_yaml('config.yml')
+        with open('config.yml', 'r') as f:
             df = pd.DataFrame(yaml.load(f), index=[0])
 
         self.assertTrue(df.equals(exp_df))
@@ -405,11 +405,11 @@ class TestExperiment(TestCase):
         :return: Expected to write yaml file with the same params in the experiment df's
         :rtype: yaml file written on desk
         """
-        experiment = Configuration(csv_file='performance.csv')
+        experiment = Configuration(csv_file='results.csv')
         self.assertFalse(experiment.df.empty)
-        experiment.log(yaml_file='params.yml')
+        experiment.log(yaml_file='config.yml')
 
-        with open('params.yml', 'r') as f:
+        with open('config.yml', 'r') as f:
             in_config = pd.DataFrame(yaml.load(f), index=[0])
 
 
