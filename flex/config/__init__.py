@@ -7,6 +7,7 @@ class Configuration:
     # TODO: add **kwargs to support any experiment parameters other than the given ones. It should be a dict.
     # TODO: csv_file and orig_df should be combined in 'prev_logs', and internal type checking to be done
     # TODO: yaml_file should be renamed into config_file and extension checked internally
+
     def __init__(self, meta_data=None, params=None, performance=None, csv_file=None, orig_df=None, yaml_file=None):
         """
         :param meta_data: the current experiment meta_data
@@ -39,6 +40,15 @@ class Configuration:
         # Log an experiment if yaml or exp attribs given is given
         if yaml_file or (meta_data and params and performance):
             self.log(meta_data, params, performance, yaml_file)
+
+
+    def __call__(self):
+        """
+        calling the class returns only the last experiment config
+        :return:
+        :rtype:
+        """
+        return dict(self.df.iloc[-1])
 
     def __str__(self):
         # FIXME
