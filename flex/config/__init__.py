@@ -22,6 +22,7 @@ class Configuration:
         self.df = pd.DataFrame()
         self.exp_df = pd.DataFrame()
 
+
         # Load old runs
         if csv_file or orig_df:
             self.add_logs(csv_file=csv_file, df=orig_df)
@@ -163,7 +164,7 @@ class Configuration:
         """
         self.experiment_info = pd.read_json(json_file)
 
-    def to_yaml(self, meta_data, params, performance, yaml_file):
+    def to_yaml(self, yaml_file):
         """ Write yaml from experiment df
 
         :param meta_data: exp_df meta
@@ -178,12 +179,8 @@ class Configuration:
         :rtype:
         """
 
-
-        exp_df = self.form_exp_df(meta_data, params, performance, yaml_file=None)
-        with open(yaml_file, 'wt') as f:
-            yaml.dump(exp_df.iloc[-1].to_dict(), f, default_flow_style=False)
-
-        return exp_df
+        with open(yaml_file, 'w') as f:
+            yaml.dump(dict(self.experiment_info), f, default_flow_style=False)
 
     def from_yaml(self, yaml_file):
         """
@@ -194,10 +191,7 @@ class Configuration:
         :rtype: DataFrame
         """
         with open(yaml_file, 'r') as f:
-            exp_df = pd.DataFrame(yaml.load(f), index=[0])
-        return exp_df
-
-
+            self.experiment_info = pd.DataFrame(yaml.load(f), index=[0])
 
     ######## All Logs Management ########
     def from_df(self, old_df):
@@ -256,3 +250,22 @@ class Configuration:
         '''
         #self.df = pd.read_json('json_file', orient='index')
         self.logs = pd.read_json(json_file)
+
+
+    # Utils
+    def df_to_exp_attribs(self, df):
+        """
+        Segment the flat experiment df into: meta_data, params and performance
+        :param df: flat experiment df
+        :type df: DataFrame
+        :return: split meta_df, config_df, results_df
+        :rtype: DataFrame, DataFrame, DataFrame
+        """
+        meta_cols = self.meta_data.keys()
+        config_cols = self.params.keys()
+        results_cols = self.performance.keys()
+        meta_df = df[meta_cols]
+        config_df = df[config_cols]
+        results_df = df[results_cols]
+
+        return meta_df, config_df, results_df
