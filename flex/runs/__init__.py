@@ -62,7 +62,7 @@ class Runner:
         test_data = data
 
         # Build model
-        self.model.build()
+        model = self.model.build()
 
         # Train
         self.learner.train(train_data=train_data, model=model)
@@ -122,7 +122,11 @@ class Runner:
 
         res = subprocess.call(['git', 'push', '-f', 'origin', tag, branch+':'+branch])
         if res != 0:
-            warnings.warn(UserWarning("Follow the steps to setup SSH keys here: https://help.github.com/articles/generating-ssh-keys, simply run (ssh-keygen -t rsa -b 4096 -C email@email.com), then cat ~/.ssh/id_rsa.pub, copy that and add SSH to github or remote")
+            warnings.warn(
+                UserWarning("Follow the steps to setup SSH keys here: "
+                            "https://help.github.com/articles/generating-ssh-keys, "
+                            "simply run (ssh-keygen -t rsa -b 4096 -C email@email.com), "
+                            "then cat ~/.ssh/id_rsa.pub, copy that and add SSH to github or remote"))
             # Follow the steps to setup SSH keys here: https://help.github.com/articles/generating-ssh-keys
             #git remote add origin https://{username}:{password}@github.com/{username}/project.git
             res = subprocess.call(['git', 'remote', 'set-url', 'origin',
