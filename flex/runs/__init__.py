@@ -37,7 +37,7 @@ class Application:
 
 
 
-class Runner:
+class Experiment:
     def __init__(self,
                  loader: BaseDataLoader,
                  preprocessor: BaseDataPreprocessor,

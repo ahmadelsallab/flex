@@ -340,7 +340,7 @@ class TestExperiment(TestCase):
 
         with self.assertWarns(UserWarning):
             experiment = Configuration()
-            df = experiment.to_df(meta_data=exp_meta, params=exp_config, performance=exp_results, yaml_file=None)
+            df = experiment.form_exp_df(meta_data=exp_meta, params=exp_config, performance=exp_results, yaml_file=None)
             self.assertFalse(df.empty)
 
             exp_df = pd.concat([pd.DataFrame([exp_meta]), pd.DataFrame([exp_config]), pd.DataFrame([exp_results])], axis=1)

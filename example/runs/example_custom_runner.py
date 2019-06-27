@@ -2,12 +2,12 @@ from ..data.custom_loaders import MyDataLoader
 from ..data.custom_preprocessors import MyDataPreprocessor
 from ..learners.custom_learners import MyLearner
 from ..models.custom_models import MyModel
-from flex.flex.runs import Runner
+from flex.flex.runs import Experiment
 
 from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 
-class MyExperiment(Runner):
+class MyExperiment(Experiment):
     def __init__(self,
                  loader: BaseDataLoader,
                  preprocessor: BaseDataPreprocessor,

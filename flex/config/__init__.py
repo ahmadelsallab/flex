@@ -1,14 +1,9 @@
-# FIXME: use https://github.com/ahmadelsallab/ml_experiments either as submodule or pip install git+https://github.com/ahmadelsallab/ml_experiments
-
 import pandas as pd
 import warnings
 import yaml
+import json
 class Configuration:
-    # TODO: add **kwargs to support any experiment parameters other than the given ones. It should be a dict.
-    # TODO: csv_file and orig_df should be combined in 'prev_logs', and internal type checking to be done
-    # TODO: yaml_file should be renamed into config_file and extension checked internally
-
-    def __init__(self, meta_data=None, params=None, performance=None, csv_file=None, orig_df=None, yaml_file=None):
+    def __init__(self, meta_data=None, params=None, performance=None, yaml_file=None, json_file=None, csv_file=None, orig_df=None):
         """
         :param meta_data: the current experiment meta_data
         :type meta_data: dict
@@ -24,31 +19,27 @@ class Configuration:
         :type yaml_file: string
 
         """
+        self.df = pd.DataFrame()
+        self.exp_df = pd.DataFrame()
 
         # Load old runs
-        if csv_file:
-            self.from_csv(csv_file)
-
-        elif orig_df is not None:
-            self.from_df(orig_df)
-
+        if csv_file or orig_df:
+            self.add_logs(csv_file=csv_file, df=orig_df)
         else: # No records exist
-
-            self.df = pd.DataFrame()
             warnings.warn(UserWarning("No old runs records given. It's OK if this is the first record or you will add later using from_csv or from_df. Otherwise, old records they will be overwritten"))
 
         # Log an experiment if yaml or exp attribs given is given
-        if yaml_file or (meta_data and params and performance):
-            self.log(meta_data, params, performance, yaml_file)
+        if yaml_file or json_file or (meta_data and params and performance):
+            self.log(meta_data, params, performance, yaml_file, json_file)
 
-
+    ####### Interfaces ############
     def __call__(self):
         """
         calling the class returns only the last experiment config
         :return:
         :rtype:
         """
-        return dict(self.df.iloc[-1])
+        return self.experiment_info
 
     def __str__(self):
         # FIXME
@@ -63,64 +54,115 @@ class Configuration:
 
     def __add__(self, other):
         # FIXME
-        self.df = pd.concat([self.df, other.df], axis=0, ignore_index=True, sort=False)
-
-    def from_csv(self, csv_file):
-        self.df = pd.read_csv(csv_file)
+        self.logs = pd.concat([self.df, other.df], axis=0, ignore_index=True, sort=False)
 
 
-    def from_df(self, old_df):
-        self.df = old_df
+    @property
+    def experiment_info(self):
+        return self.exp_df.iloc[-1]
 
-    def log(self, meta_data=None, params=None, performance=None, yaml_file=None):
+    @experiment_info.setter
+    def experiment_info(self, exp_df):
+        self.exp_df = exp_df
+        self.update_df()
 
-        # Build the log experiment df
-        exp_df = self.to_df(meta_data, params, performance, yaml_file)
 
-        # Append the current experiment to old records
-        self.df = pd.concat([self.df, exp_df], axis=0, ignore_index=True, sort=False)
+    @property
+    def logs(self):
+        return self.df
 
-    def to_df(self, meta_data=None, params=None, performance=None, yaml_file=None):
+    @logs.setter
+    def logs(self, df):
+        self.df = df
+        self.update_df()
+
+
+    def add_logs(self, csv_file=None, df=None):
+        """
+        Add old experiments logs
+        :param csv_file:
+        :type csv_file:
+        :param df:
+        :type df:
+        :return:
+        :rtype:
+        """
+        if csv_file:
+            self.from_csv(csv_file=csv_file)
+        elif df:
+            self.from_df(old_df=df)
+
+
+
+    def log(self, meta_data=None, params=None, performance=None, yaml_file=None, json_file=None):
+        """
+        Adds new config
+
+        :param meta_data:
+        :type meta_data:
+        :param params:
+        :type params:
+        :param performance:
+        :type performance:
+        :param yaml_file:
+        :type yaml_file:
+        :return:
+        :rtype:
+        """
         if yaml_file:
-            exp_df = self.from_yaml(yaml_file)
-
+            self.experiment_info = self.from_yaml(yaml_file)
+        elif json_file:
+            self.experiment_info = self.exp_from_json(json_file)
         else:
             # Load runs data:
             assert isinstance(meta_data, dict), "Meta data must a dictionary."
             assert isinstance(params, dict), "Config must a dictionary."
             assert isinstance(performance, dict), "Results must a dictionary."
 
+            self.meta_data = meta_data
+            self.params = params
+            self.performance = performance
+
             # Concatenate all experiment parameters (meta, configs and performance) along their columns. This will be one entry DataFrame.
-            exp_df = pd.concat([pd.DataFrame([meta_data]), pd.DataFrame([params]), pd.DataFrame([performance])], axis=1)
+            self.experiment_info = pd.concat([pd.DataFrame([meta_data]), pd.DataFrame([params]), pd.DataFrame([performance])], axis=1)
 
-        return exp_df
-
-    def to_csv(self, csv_file):
+    def save(self, json_file=None, yaml_file=None):
         """
-        Writes the whole experiment data frame to csv_file
-        Warning: if the csv_file has old runs they will be overwritten.
-        To avoid that, first load the old runs records using from_csv method.
-
-        :param csv_file: full file path
-        :type csv_file: string
+        Saves current config
         :return:
         :rtype:
         """
-        with open(csv_file, mode='w', newline='\n') as f:
-            self.df.to_csv(f, index=False, sep=",", line_terminator='\n', encoding='utf-8')
-        #self.df.to_csv(csv_file, index=False, line_terminator='\n')
+        pass
 
-    def from_yaml(self, yaml_file):
+    def save_logs(self, csv_file):
         """
-        Convert yaml file into df
-        :param yaml_file:
-        :type yaml_file:
-        :return: experiment data frame
-        :rtype: DataFrame
+        Writes all logs to csv file
+        :return:
+        :rtype:
         """
-        with open(yaml_file, 'r') as f:
-            exp_df = pd.DataFrame(yaml.load(f), index=[0])
-        return exp_df
+        self.to_csv(csv_file=csv_file)
+
+    ####### Private Methods ############
+    def update_df(self):
+        self.df = pd.concat([self.df, self.exp_df], axis=0, ignore_index=True, sort=False)
+
+    ######## Current Config Management ########
+    def exp_to_json(self, json_file):
+        """
+        Writes current config to json
+        :return:
+        :rtype:
+        """
+        self.exp_df.to_json(json_file)
+
+    def exp_from_json(self, json_file):
+        """
+        Loads experiment from JSON
+        :return:
+        :rtype:
+        """
+        self.experiment_info = pd.read_json(json_file)
+
     def to_yaml(self, meta_data, params, performance, yaml_file):
         """ Write yaml from experiment df
 
@@ -137,86 +179,80 @@ class Configuration:
         """
 
 
-        exp_df = self.to_df(meta_data, params, performance, yaml_file=None)
+        exp_df = self.form_exp_df(meta_data, params, performance, yaml_file=None)
         with open(yaml_file, 'wt') as f:
             yaml.dump(exp_df.iloc[-1].to_dict(), f, default_flow_style=False)
 
         return exp_df
 
-class DLConfiguration(Configuration):
-
-    def _init_(self, yaml_file=None, meta_data=None, config=None, results=None):
+    def from_yaml(self, yaml_file):
         """
-
+        Convert yaml file into df
         :param yaml_file:
         :type yaml_file:
-        :param meta_data:
-        :type meta_data:
-        :param config:
-        :type config:
-        :param results:
-        :type results:
+        :return: experiment data frame
+        :rtype: DataFrame
+        """
+        with open(yaml_file, 'r') as f:
+            exp_df = pd.DataFrame(yaml.load(f), index=[0])
+        return exp_df
+
+
+
+    ######## All Logs Management ########
+    def from_df(self, old_df):
+        """
+        Loads old logs from DataFrame
+        :param old_df:
+        :type old_df:
+        :return:
+        :rtype:
+        """
+        self.logs = old_df
+
+    def from_csv(self, csv_file):
+        """
+        Load config from csv
+        """
+        self.logs = pd.read_csv(csv_file)
+
+    def to_csv(self, csv_file):
+        """
+        Writes the whole experiment data frame to csv_file
+        Warning: if the csv_file has old runs they will be overwritten.
+        To avoid that, first load the old runs records using from_csv method.
+
+        :param csv_file: full file path
+        :type csv_file: string
+        :return:
+        :rtype:
+        """
+        self.df.to_csv(csv_file)
+
+
+    def to_json(self, json_file):
+        """
+        Log all logs in JSON
+        :param json_file:
+        :type json_file:
         :return:
         :rtype:
         """
 
-        if yaml_file:
-            self.parse_yaml(yaml_file)
-        elif meta_data:
-            '''meta_data is supposed to be dict: {'Name': , 'Description': , 'Run File':, 'Commit':}'''
-            assert isinstance(meta_data, dict)
-            self.meta_df = pd.DataFrame(meta_data)
-        elif config:
-            assert isinstance(config, dict)
-        elif results:
-            assert isinstance(results, dict)
-        return
+        #self.df.to_json(json_file, orient='index')
+        self.df.to_json(json_file)
 
-    def __str__(self):
-
-        return 0
-
-    def build_hier_df(self, level1_col_names, level2_dfs):
-        """ Utility to restore a 2 level hierarichal indexed df, from many flat dfs
-
-        :param level1_col_names: the higher level columns names
-        :type level1_col_names: list of strings
-        :param level2_dfs: the data frames to be used to build the 2 level column indexed df
-        :type level2_dfs: list of DataFrames
-        :return: merged hierarichal data frame
-        :rtype: pd.DataFrame
+    def from_json(self, json_file):
         """
-        level1_cols = []
-        for level1_col_name, level2_df in zip(level1_col_names, level2_dfs):
-            level1_cols.extend([level1_col_name for col in level2_df.columns])
-        merged = pd.concat(level2_dfs, axis=1)
-        merged.columns = [level1_cols, merged.columns]
-
-        return merged
-
-    def parse_yaml(self, yaml_file):
-        # TODO: read yaml file and fill in the proper dfs
-        return
-    def from_csv(self):
-
-        return 0
-
-    def to_csv(self):
-
-        return 0
-
-    def save(self):
-
-        return 0
-
-    def load(self):
-
-        return 0
-
-    def from_yaml(self):
-
-        return 0
-
-    def to_yaml(self):
-
-        return 0
+        Log all logs in JSON with index orientation
+        :param json_file:
+        :type json_file:
+        :return:
+        :rtype:
+        """
+        '''
+        with open(json_file, 'r') as f:
+            self.df = pd.DataFrame(json.load(json_file))
+        '''
+        #self.df = pd.read_json('json_file', orient='index')
+        self.logs = pd.read_json(json_file)

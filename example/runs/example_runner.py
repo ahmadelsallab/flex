@@ -4,7 +4,7 @@ from ..data.custom_loaders import MyDataLoader
 from ..data.custom_preprocessors import MyDataPreprocessor
 from ..learners.custom_learners import MyLearner
 from ..models.custom_models import MyModel
-from flex.flex.runs import Runner
+from flex.flex.runs import Experiment
 
 from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
@@ -23,9 +23,9 @@ learner = MyLearner(config=config)
 
 
 # Run experiment
-experiment = Runner(loader=loader,
-                    preprocessor=preprocessor,
-                    model=model,
-                    learner=learner,
-                    config=config)
+experiment = Experiment(loader=loader,
+                        preprocessor=preprocessor,
+                        model=model,
+                        learner=learner,
+                        config=config)
 experiment.run()
