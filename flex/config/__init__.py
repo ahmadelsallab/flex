@@ -1,7 +1,33 @@
 import pandas as pd
 import warnings
 import yaml
-import json
+
+class ConfigDataMgr:
+    def __init__(self, logs=None, config=None):
+        self.df = pd.DataFrame()
+        self.config_df = pd.DataFrame()
+
+        self.logs=logs
+        self.config = config
+
+    @property
+    def config(self):
+        return self.config_df
+
+    @config.setter
+    def config(self, config_df):
+        self.config_df = config_df
+        self.logs = config_df
+
+    @property
+    def logs(self):
+        return self.df
+
+    @logs.setter
+    def logs(self, df):
+        self.df.append(df, ignore_index=True)
+
+
 class Configuration:
     def __init__(self, meta_data=None, params=None, performance=None, yaml_file=None, json_file=None, csv_file=None, orig_df=None):
         """
@@ -145,7 +171,8 @@ class Configuration:
 
     ####### Private Methods ############
     def update_df(self):
-        self.df = pd.concat([self.df, self.exp_df], axis=0, ignore_index=True, sort=False)
+        #self.df = pd.concat([self.df, self.exp_df], axis=0, ignore_index=True, sort=False)
+        self.df = self.df.append(self.exp_df, ignore_index=True)
 
     ######## Current Config Management ########
     def exp_to_json(self, json_file):
