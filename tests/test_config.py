@@ -226,7 +226,7 @@ class TestExperiment(TestCase):
         experiment = Configuration(csv_file='results_old.csv')
         experiment.log(meta_data=exp_meta, params=exp_config, performance=exp_results, yaml_file=None)
         self.assertFalse(experiment.df.empty)
-        #exp_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
+        #config_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
         exp_df = pd.concat([pd.DataFrame([exp_meta]), pd.DataFrame([exp_config]), pd.DataFrame([exp_results])], axis=1)
         df = pd.concat([old_df, exp_df], axis=0, ignore_index=True, sort=False)
         self.assertTrue(df.equals(experiment.df))
@@ -248,7 +248,7 @@ class TestExperiment(TestCase):
             self.assertTrue(experiment.df.empty)
             experiment.log(meta_data=exp_meta, params=exp_config, performance=exp_results, yaml_file=None)
             self.assertFalse(experiment.df.empty)
-            #exp_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
+            #config_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
             exp_df = pd.concat([pd.DataFrame([exp_meta]), pd.DataFrame([exp_config]), pd.DataFrame([exp_results])], axis=1)
 
             self.assertTrue(exp_df.equals(experiment.df))
@@ -256,7 +256,7 @@ class TestExperiment(TestCase):
         # Log another one
         experiment.log(meta_data=exp_meta, params=exp_config, performance=exp_results, yaml_file=None)
         self.assertFalse(experiment.df.empty)
-        #exp_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
+        #config_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
         exp_df = pd.concat([exp_df, exp_df], axis=0, ignore_index=True, sort=False)
 
         self.assertTrue(exp_df.equals(experiment.df))
@@ -377,7 +377,7 @@ class TestExperiment(TestCase):
         experiment = Configuration(csv_file='results_old.csv')
         experiment.log(meta_data=exp_meta, params=exp_config, performance=exp_results, yaml_file=None)
         self.assertFalse(experiment.df.empty)
-        #exp_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
+        #config_df = old_df.iloc[-1]#pd.concat([meta_df.iloc[-1], config_df.iloc[-1], exp_results], axis=1)
         exp_df = pd.concat([pd.DataFrame([exp_meta]), pd.DataFrame([exp_config]), pd.DataFrame([exp_results])], axis=1)
         df = pd.concat([old_df, exp_df], axis=0, ignore_index=True, sort=False)
         self.assertTrue(df.equals(experiment.df))
