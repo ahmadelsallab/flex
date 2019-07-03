@@ -41,12 +41,15 @@ We define an ML Experiment to be composed of:
 Each of the above components, can be re-used across different experiments.
 Moreover, the mixture of them forms an experiment. 
 
-## _"FLEX is flexible_"
+## _"FLEX is FLEXible_"
 You can use FLEX in many different ways:
 
 - For managing experiments configurations and reproducing results.
 - For wrapping and deploying ML models.
 - For running standard experiments and re-using models, data,...etc across different experiments. framework.
+- No binding to specific framework.
+- Can work with any remote git server.
+- Flexibe API's.
 
 
 Under the package called "flex", you will find base classes that implements standard interfaces for:
@@ -65,8 +68,7 @@ We have provided an example folder for the best folder structure to use FLEX.
 However, this structure is not mandatory; you still can use some features like configuration management without that structure.
 
 The structure is described here:
-- configs: contains the different meta_data, params and results of different experiments using the Configuration base class.
-You can define them directly as dicts (see the examples example/notebooks). However, if you wish to re-use some configuration, it's better to inherit from Configuration.
+- configs: contains the different configurations of different experiments using the Configuration base class.
 - data: contains custom re-usable loaders and pre-processors
 - models: contains the different custom re-usable models
 - runs: contains the different experiments and deployment apps.
