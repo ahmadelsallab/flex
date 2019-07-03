@@ -481,7 +481,7 @@ loader = MyDataLoader(config=config)
 # Preprocess data
 preprocessor = MyDataPreprocessor(config=config)
 
-# Build model
+# Build or load model
 model = MyModel(config=config)
 
 # Train
