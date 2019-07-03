@@ -95,28 +95,28 @@ In general any experiment is composed of:
 
 Suppose all your previous records are in 'results_old.csv'.
 
-And now you want to log a new experiment.
+And now you want to log a new experiment results.
 
 
 ```python
 from flex.config import Configuration
 
-exp_meta_data = {'name': 'experiment_1',
+meta_data = {'name': 'experiment_1',
             'purpose': 'test my awesome model',
              'date': 'today',
             }
 
-exp_config = {'model_arch': '100-100-100',
+config_params = {'model_arch': '100-100-100',
           'learning_rate': 0.0001,
           'epochs': 2,
           'optimizer': 'Adam',
          }
 
-exp_results = {'val_acc': 0.95, 
+results = {'val_acc': 0.95, 
          'F1': 0.92,
          'Comment': 'Best model'}
 
-experiment = Configuration(csv_file='results_old.csv', meta_data=exp_meta_data, config=exp_config, results=exp_results)
+experiment = Configuration([meta_data, config_params, results])
 
 
 ```
@@ -129,14 +129,21 @@ Now Write CSV of the results
 
 
 ```python
-experiment.to_csv('results.csv')
+experiment.save_config('config.json')
 ```
+
+Supported formats: 
+- JSON
+- CSV
+- YAML
+- HTML
+- Pickle
 
 If you want to see the whole record:
 
 
 ```python
-print(experiment.df)
+print(experiment.config)
 ```
 
 
@@ -147,35 +154,35 @@ print(experiment.df)
 from flex.config import Configuration
 
 # Load the old records
-experiment = Configuration(csv_file='results_old.csv')
+experiment = Configuration(logs='results_old.csv')
 
-# TODO: perform you experiment
+# TODO: Perform your experiment
 
 # Now log the new experiment data
-exp_meta_data = {'name': 'experiment_1',
+meta_data = {'name': 'experiment_1',
             'purpose': 'test my awesome model',
              'date': 'today',
             }
 
-exp_config = {'model_arch': '100-100-100',
+config_params = {'model_arch': '100-100-100',
           'learning_rate': 0.0001,
           'epochs': 2,
           'optimizer': 'Adam',
          }
 
-exp_results = {'val_acc': 0.95, 
+results = {'val_acc': 0.95, 
          'F1': 0.92,
          'Comment': 'Best model'}
 
-experiment.log(meta_data=exp_meta_data, params=exp_config, perfromance=exp_results)
+experiment.config = [meta_data, config_params, results]
 
 # Export the whole result
-experiment.to_csv('results.csv')
+experiment.save_logs('results.csv')
 ```
 
 ### You can init an emtpy experiment, or with a certain csv, and add or change the old records csv.
 
-__But in this case, the records will be modified not appended or updated.__
+__In case experiments parameters added or deleted, they will be merged.__
 
 
 ```python
@@ -183,42 +190,16 @@ from flex.config import Configuration
 # Init empty experiment
 experiment = Configuration() # or Experiment(csv_file="another_results.csv")
 
-# Update with another
-experiment.from_csv(csv_file='results_old.csv')
+# Update with old logs
+experiment.load_logs(file='results_old.csv')
 
-# Now log the new experiment data
-exp_meta_data = {'name': 'experiment_1',
-            'purpose': 'test my awesome model',
-             'date': 'today',
-            }
+# Load old config
+experiment.load_config(file='config.json')
 
-exp_config = {'model_arch': '100-100-100',
-          'learning_rate': 0.0001,
-          'epochs': 2,
-          'optimizer': 'Adam',
-         }
+# Now you can save new logs with the new experiment appended.
+experiment.save_logs(file='results.csv')
 
-exp_results = {'val_acc': 0.95, 
-         'F1': 0.92,
-         'Comment': 'Best model',}
-
-experiment.log(meta_data=exp_meta_data, params=exp_config, performance=exp_results)
-
-# Export the whole result
-experiment.to_csv('results.csv')
-
-experiment.df
 ```
-
-### Other use cases
-
-- You can load old records from pandas.DataFrame instead of csv using orig_df in the Experiment constructor
-```
-df = pd.read_csv('results.old.csv')
-experiment = Experiment(orig_df=df)
-```
-
-- You can log experiment using yaml files, either in init or using ```from_yaml``` method
 
 # Model wrapping and deployment
 You have trained a model, and want to deploy it, meaning to feed it input and get an output.
@@ -244,12 +225,12 @@ You could directly write them in the same code if you want
 You could define them here if you want and pass them to the Application constructor
 
 ```buildoutcfg
-from ..data.custom_loaders import MyDataLoader
-from ..data.custom_preprocessors import MyDataPreprocessor
-from ..models.custom_models import MyModel
-from flex.flex.runs import Application
+from data.custom_loaders import MyDataLoader
+from data.custom_preprocessors import MyDataPreprocessor
+from models.custom_models import MyModel
+from flex.runs import Application
 
-from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
+from configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 # Load data
 loader = MyDataLoader(config=config)
@@ -272,12 +253,12 @@ results = app.run()
 You can also override and implement your own deployment steps by inheriting from the Application class and implementing your own run method
 
 ```buildoutcfg
-from ..data.custom_loaders import MyDataLoader
-from ..data.custom_preprocessors import MyDataPreprocessor
-from ..models.custom_models import MyModel
-from flex.flex.runs import Application
+from data.custom_loaders import MyDataLoader
+from data.custom_preprocessors import MyDataPreprocessor
+from models.custom_models import MyModel
+from flex.runs import Application
 
-from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
+from configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 class MyApp(Application):
 
@@ -345,13 +326,13 @@ Through the standard run interface, standard training and evaluation steps are e
 6- Save configuration
 
 ```buildoutcfg
-from ..data.custom_loaders import MyDataLoader
-from ..data.custom_preprocessors import MyDataPreprocessor
-from ..learners.custom_learners import MyLearner
-from ..models.custom_models import MyModel
-from flex.flex.runs import Runner
+from data.custom_loaders import MyDataLoader
+from data.custom_preprocessors import MyDataPreprocessor
+from learners.custom_learners import MyLearner
+from models.custom_models import MyModel
+from flex.runs import Experiment
 
-from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
+from configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 # Load data
 loader = MyDataLoader(config=config)
@@ -379,13 +360,13 @@ experiment.run()
 Moreover, you can override the standard run() and implement some custom steps if needed:
 
 ````buildoutcfg
-from ..data.custom_loaders import MyDataLoader
-from ..data.custom_preprocessors import MyDataPreprocessor
-from ..learners.custom_learners import MyLearner
-from ..models.custom_models import MyModel
-from flex.flex.runs import Runner
+from data.custom_loaders import MyDataLoader
+from data.custom_preprocessors import MyDataPreprocessor
+from learners.custom_learners import MyLearner
+from models.custom_models import MyModel
+from flex.runs import Experiment
 
-from ..configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
+from configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 
 class MyExperiment(Runner):
@@ -422,7 +403,7 @@ class MyExperiment(Runner):
         #self.model.predict()
 
         # Load performance
-        self.config.to_csv(csv_file='../../runs/performance.csv')
+        self.config.save_config(file='runs/performance.csv')
 
 
 
@@ -442,11 +423,12 @@ learner = MyLearner(config=config)
 
 # Run experiment
 experiment = MyExperiment(loader=loader,
-                    preprocessor=preprocessor,
-                    model=model,
-                    learner=learner,
-                    config=config)
+                          preprocessor=preprocessor,
+                          model=model,
+                          learner=learner,
+                          config=config)
 experiment.run()
+
 ````
 # Known issues
 https://github.com/ahmadelsallab/flex/issues
