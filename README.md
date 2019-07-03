@@ -547,12 +547,12 @@ experiment.run()
 - FLEX provides framework to re-use models, preprocessors, loaders,..etc among different experiments.
 - FLEX provides model wrapping through the Application class.
 
-# Difference from comet_ml
+# Difference from Comet_ml
 - FLEX is framework agnostic.
 - Comet_ml is paid.
 - Comet_ml is API based, and need to have the repo public on github.
 
-# Difference from studio_ml
+# Difference from Studio.ml
 - FLEX supports experiments: config | results reporting, across historical logs.
 - FLEX tracks experiments as git branches.
 - Studio.ml supports UI.
