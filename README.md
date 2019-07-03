@@ -177,7 +177,7 @@ results = {'val_acc': 0.95,
 experiment.config = [meta_data, config_params, results]
 
 # Export the whole result
-experiment.save_logs('results.csv')
+experiment.save_logs('runs/results.csv')
 ```
 
 ### You can init an emtpy experiment, or with a certain csv, and add or change the old records csv.
@@ -191,13 +191,13 @@ from flex.config import Configuration
 experiment = Configuration() # or Experiment(csv_file="another_results.csv")
 
 # Update with old logs
-experiment.load_logs(file='results_old.csv')
+experiment.load_logs(file='runs/results_old.csv')
 
 # Load old config
-experiment.load_config(file='config.json')
+experiment.load_config(file='configs/config.json')
 
 # Now you can save new logs with the new experiment appended.
-experiment.save_logs(file='results.csv')
+experiment.save_logs(file='runs/results.csv')
 
 ```
 
@@ -224,7 +224,7 @@ You could directly write them in the same code if you want
 2- All loaders, preprocessors, models,...etc are pre-defined and saved in the project folders as customs.
 You could define them here if you want and pass them to the Application constructor
 
-```buildoutcfg
+```python
 from data.custom_loaders import MyDataLoader
 from data.custom_preprocessors import MyDataPreprocessor
 from models.custom_models import MyModel
@@ -252,7 +252,7 @@ results = app.run()
 
 You can also override and implement your own deployment steps by inheriting from the Application class and implementing your own run method
 
-```buildoutcfg
+```python
 from data.custom_loaders import MyDataLoader
 from data.custom_preprocessors import MyDataPreprocessor
 from models.custom_models import MyModel
@@ -325,7 +325,7 @@ Through the standard run interface, standard training and evaluation steps are e
 
 6- Save configuration
 
-```buildoutcfg
+```python
 from data.custom_loaders import MyDataLoader
 from data.custom_preprocessors import MyDataPreprocessor
 from learners.custom_learners import MyLearner
@@ -349,17 +349,21 @@ learner = MyLearner(config=config)
 
 
 # Run experiment
-experiment = Runner(loader=loader,
+experiment = Experiment(loader=loader,
                     preprocessor=preprocessor,
                     model=model,
                     learner=learner,
                     config=config)
 experiment.run()
+
+# Save the experiment
+experiment.save({'branch':'experiments', 'tag':config.name})
+
 ```
 
 Moreover, you can override the standard run() and implement some custom steps if needed:
 
-````buildoutcfg
+````python
 from data.custom_loaders import MyDataLoader
 from data.custom_preprocessors import MyDataPreprocessor
 from learners.custom_learners import MyLearner
@@ -369,7 +373,7 @@ from flex.runs import Experiment
 from configs.custom_config import config # Note that, we could directly put the params here, but it can also be kept under configs as it can be used with other runs
 
 
-class MyExperiment(Runner):
+class MyExperiment(Experiment):
     def __init__(self,
                  loader: BaseDataLoader,
                  preprocessor: BaseDataPreprocessor,
@@ -403,7 +407,7 @@ class MyExperiment(Runner):
         #self.model.predict()
 
         # Load performance
-        self.config.save_config(file='runs/performance.csv')
+        self.config.save_config(file='runs/results.csv')
 
 
 
@@ -429,14 +433,123 @@ experiment = MyExperiment(loader=loader,
                           config=config)
 experiment.run()
 
+# Save the experiment
+experiment.save({'branch':'experiments', 'tag':config.name})
+
 ````
+
+## Load an experiment
+An experiment needs the following to be reproduced:
+
+1- Configurations
+
+2- Running steps
+
+3- Data
+
+4- Model
+
+1 and 2 are tracked through git
+3 and 4 are tracked as data files
+
+_Now you have 2 options_
+
+## A. Load from known paths
+In this case you define in the config dict the paths to:
+- Raw data files 
+- Model file
+
+Then write your own run steps, or use the default ones.
+
+```python
+from flex.config import Configuration
+from data.custom_loaders import MyDataLoader
+from data.custom_preprocessors import MyDataPreprocessor
+from learners.custom_learners import MyLearner
+from models.custom_models import MyModel
+from flex.runs import Experiment
+
+
+# Load the old configs
+config = Configuration()
+config.load_config(file='configs/config.json')
+
+
+# Load data as defined in config['data_path']
+loader = MyDataLoader(config=config)
+
+# Preprocess data
+preprocessor = MyDataPreprocessor(config=config)
+
+# Build model
+model = MyModel(config=config)
+
+# Train
+learner = MyLearner(config=config)
+
+
+# Run experiment
+experiment = Experiment(loader=loader,
+                        preprocessor=preprocessor,
+                        model=model,
+                        learner=learner,
+                        config=config)
+# The model is loaded automatically based on the model_file param
+experiment.run()
+
+
+```
+## B. Restore an experiment from previous version on git 
+
+```python
+from flex.config import Configuration
+from data.custom_loaders import MyDataLoader
+from data.custom_preprocessors import MyDataPreprocessor
+from learners.custom_learners import MyLearner
+from models.custom_models import MyModel
+from flex.runs import Experiment
+
+# Restore everything from git, with certain branch and experiment tag
+experiment = Experiment().load({'branch':'experiments', 'tag':'experiment_tag_name'})
+
+# Now, all the custom loaders are restored
+# Load the old configs
+config = Configuration(config='config/config.json')
+
+
+# Load data as defined in config['data_path']
+loader = MyDataLoader(config=config)
+
+# Preprocess data
+preprocessor = MyDataPreprocessor(config=config)
+
+# Load model
+model = MyModel(config=config)
+
+# Train
+learner = MyLearner(config=config)
+
+# Now update all the experiment components
+experiment.loader = MyDataLoader
+experiment.preprocessor = MyDataPreprocessor
+experiment.model = model
+experiment.learner = learner
+
+# Run the experiment
+# The model is loaded automatically based on the model_file param
+experiment.run()
+
+``` 
+
+
+
+
 # Known issues
 https://github.com/ahmadelsallab/flex/issues
 
 # Future developments
-- JSON Support
-- xlsx support
-- The model checkpoints
+- The model checkpoints management and tracking
+- Data version management and tracking
 - Different visualizations and curves
 - Upload the result file to gdrive for online updates and sharing
 

@@ -39,11 +39,11 @@ class Application:
 
 class Experiment:
     def __init__(self,
-                 loader: BaseDataLoader,
-                 preprocessor: BaseDataPreprocessor,
-                 model: BaseModel,
-                 learner: BaseLearner,
-                 config: Configuration):
+                 loader: BaseDataLoader=None,
+                 preprocessor: BaseDataPreprocessor=None,
+                 model: BaseModel=None,
+                 learner: BaseLearner=None,
+                 config: Configuration=None):
         self.loader = loader
         self.preprocessor = preprocessor
         self.model = model
@@ -63,7 +63,10 @@ class Experiment:
         test_data = data
 
         # Build model
-        self.model.build()
+        if self.config().model_file:
+            self.model.load()
+        else:
+            self.model.build()
 
         # Train
         self.learner.train(train_data=train_data, model=self.model)
@@ -77,7 +80,33 @@ class Experiment:
         # Load performance
         self.config.save_config(file='../../runs/performance.csv')
 
-    def save(self, branch, tag):
+    def save(self, config_file=None, git_info=None):
+        """
+
+        :param git_info: tuple (branch, tag)
+        :type git_info:
+        :param config_file:
+        :return:
+        :rtype:
+        """
+        # Save configs
+        if config_file:
+            self.config.save_config(config_file)
+        else:
+            try:
+                # Use the default file in the config struct
+                self.config.save_config(file=self.config().config_file)
+            except:
+                warnings.warn(UserWarning("No defined config file. No config is saved"))
+
+        # Save model
+        self.model.save()
+
+        # Track on git
+        if git_info:
+            self.save_git(git_info['branch'], git_info['tag'])
+
+    def save_git(self, branch=None, tag=None):
         """
         git checkout -b <branch>
         git add *
@@ -92,6 +121,7 @@ class Experiment:
         :return:
         :rtype:
         """
+        #
         # Change dir to base repo path
         # TODO: make repo path generic
         # TODO: add to Configuration self.config, meta and performance
@@ -138,7 +168,24 @@ class Experiment:
             assert res == 0, 'Git command failed: ' + \
                              'git remote add origin https://{username}:{password}@github.com/{username}/project.git'
 
-    def load(self, branch, tag):
+    def load(self, config_file=None, git_info=None):
+
+        # Load config
+        if config_file:
+            self.config.load_config(config_file)
+        else:
+            try:
+                self.config.load_config(file=self.config().config_file)
+            except:
+                warnings.warn(UserWarning("No defined config file. No config is loaded"))
+
+        # Load model
+        self.model.load()
+
+        # Load git info
+        self.load(git_info['branch'], git_info['tag'])
+
+    def load_git(self, branch, tag):
         '''
         git checkout -b <branch>
         git checkout  tags/<tag>
