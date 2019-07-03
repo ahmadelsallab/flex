@@ -156,10 +156,10 @@ class Configuration:
     def __init__(self, config=None, logs=None):
 
         # Load old runs
-        logs_df = self.process_config(config)
+        logs_df = self.process_logs(config)
 
         # Log config
-        config_df = self.process_logs(logs)
+        config_df = self.process_config(logs)
 
         # Update the DB
         self.data_mgr = DataMgr(logs=logs_df, config=config_df)
@@ -220,7 +220,7 @@ class Configuration:
         """
 
         :param config:
-        :type config: pd.DataFrame, dict, file
+        :type config: pd.DataFrame, dict, file, or list. List: meta, params, results --> all must be dicts
         :return:
         :rtype:
         """
@@ -230,9 +230,12 @@ class Configuration:
             config_df = pd.DataFrame(config, index=[0])
         elif isinstance(config, str):
             config_df = ConfigTypeMgr.load(file=config)
+        elif isinstance(config, list):
+            # List: meta, params, results --> all must be dicts
+            config_df = pd.concat([pd.DataFrame(sub_cfg, index=[0]) for sub_cfg in config], axis=1)
         else:
             config_df = pd.DataFrame()
-            #assert "Unsupported format of config passed"
+            warnings.warn(UserWarning("Unsupported format of config passed. Empty data is initialized."))
 
         return config_df
 
