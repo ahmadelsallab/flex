@@ -5,6 +5,7 @@ from ..models import BaseModel
 from ..config import Configuration
 
 class BaseLearner(metaclass=ABCMeta):
+
     def __init__(self, config: Configuration):
         self.config = config
 

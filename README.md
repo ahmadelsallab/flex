@@ -2,12 +2,15 @@
 Framework for machine Learning EXperiment
 
 # Features
-- DL Framework independent. Frameworks like Keras, Pytoch,...etc are plugins to FLEX.
-- Reproducible experiments, with configuration management over meta data, hyper parameters and results.
-- Support of reusable models, data loaders, preprocessing,...etc
+- Framework Agnostic.
+- Reproducible experiments:
+    - Configuration Management.
+    - Data Management.
+    - Model Management.
+- Experiments results reporting and tracking as git branches.
+- Support of reusable models, data loaders, preprocessing,...etc across different experiments.
 - Standardized learning process and interfaces.
-- Extensible for models, data, training methods, utils and frameworks.
-- Utils for models, data loaders, data preprocessing, text, image, ...etc.
+- Model wrapping as an Application.
 
 # Installation
 ```
@@ -43,16 +46,15 @@ You can use FLEX in many different ways:
 
 - For managing experiments configurations and reproducing results.
 - For wrapping and deploying ML models.
-- For running standard experiments and re-using models, data,...etc across different experiments.
-- Or just using the utilities inside aside of the whole framework.
+- For running standard experiments and re-using models, data,...etc across different experiments. framework.
 
 
-Under the package called "flex", you will find many base classes that implements standard interfaces for:
+Under the package called "flex", you will find base classes that implements standard interfaces for:
 - Data loading 
 - Data pre-processing
 - Models building
-- Training (learners)
-- Deployment
+- Training (Learners)
+- Deployment as an App
 
 All the library is "framework agnostic", meaning, DL frameworks like Keras, Pytorch, ...etc are just plugins to FLEX.
 It's not mandatory to use all the base classes, meaning, you can still use most of the features if you implement your own.
@@ -68,7 +70,6 @@ You can define them directly as dicts (see the examples example/notebooks). Howe
 - data: contains custom re-usable loaders and pre-processors
 - models: contains the different custom re-usable models
 - runs: contains the different experiments and deployment apps.
-- utils: project wide utilities.
 
 
 ## Use cases
