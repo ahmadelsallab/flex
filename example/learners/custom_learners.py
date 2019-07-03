@@ -1,4 +1,6 @@
 from flex.flex.learners import BaseLearner
+from flex.flex.models import BaseModel
+from flex.flex.data import Data
 
 class MyLearner(BaseLearner):
     def __init__(self, config):

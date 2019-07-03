@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
+from ..config import Configuration
 
 class BaseModel(metaclass=ABCMeta):
-    def __init__(self, config):
+    def __init__(self, config: Configuration):
         self.config = config
 
     @abstractmethod

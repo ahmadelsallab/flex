@@ -1,11 +1,11 @@
 from abc import ABCMeta, abstractmethod
 
-from flex.utils.data.base_datastruct import Data
-from flex.utils.models.base_model import BaseModel
-
+from ..data import Data
+from ..models import BaseModel
+from ..config import Configuration
 
 class BaseLearner(metaclass=ABCMeta):
-    def __init__(self, config):
+    def __init__(self, config: Configuration):
         self.config = config
 
     @abstractmethod

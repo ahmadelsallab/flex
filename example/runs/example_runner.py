@@ -1,4 +1,4 @@
-# This file uses the same run() sequennce in the base runner
+# This file uses the same run() sequence in the base runner
 
 from ..data.custom_loaders import MyDataLoader
 from ..data.custom_preprocessors import MyDataPreprocessor

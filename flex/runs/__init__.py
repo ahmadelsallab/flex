@@ -51,6 +51,7 @@ class Experiment:
         self.config = config
 
     def run(self):
+
         # Load data
         raw_data = self.loader.load_data()
 
@@ -62,19 +63,19 @@ class Experiment:
         test_data = data
 
         # Build model
-        model = self.model.build()
+        self.model.build()
 
         # Train
-        self.learner.train(train_data=train_data, model=model)
+        self.learner.train(train_data=train_data, model=self.model)
 
         # Test
-        self.learner.test(test_data=test_data, model=model)
+        self.learner.test(test_data=test_data, model=self.model)
 
         # Predict
         #self.model.predict()
 
         # Load performance
-        self.config.to_csv(csv_file='../../runs/performance.csv')
+        self.config.save_config(file='../../runs/performance.csv')
 
     def save(self, branch, tag):
         """
