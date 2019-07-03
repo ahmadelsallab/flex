@@ -40,7 +40,7 @@ class DataMgr:
     def append(self, df):
         self.df.append(df, ignore_index=True)
 
-class ConfigMgr:
+class ConfigTypeMgr:
     type_hndlr = {'csv'    :CSVConfig,
                   'json'   :JSONConfig,
                   'html'   :HTMLConfig,
@@ -148,13 +148,13 @@ class Configuration:
 
     ####### Interfaces ############
     def save_config(self, file):
-        ConfigMgr.save(file, self.data_mgr.config)
+        ConfigTypeMgr.save(file, self.data_mgr.config)
 
     def load_config(self, file):
         self.data_mgr.config = self.process_config(file)
 
     def save_logs(self, file):
-        ConfigMgr.save(file, self.data_mgr.logs)
+        ConfigTypeMgr.save(file, self.data_mgr.logs)
 
     def load_logs(self, file):
         self.data_mgr.logs = self.process_logs(file)
@@ -185,7 +185,7 @@ class Configuration:
         elif isinstance(config, dict):
             config_df = pd.DataFrame(config)
         elif isinstance(config, str):
-            config_df = ConfigMgr.load(file=config)
+            config_df = ConfigTypeMgr.load(file=config)
         else:
             config_df = pd.DataFrame()
             assert "Unsupported format of config passed"
@@ -196,7 +196,7 @@ class Configuration:
         if isinstance(logs, pd.DataFrame):
             logs_df = logs
         elif isinstance(logs, str):
-            logs_df = ConfigMgr.load(file=logs)
+            logs_df = ConfigTypeMgr.load(file=logs)
         else: # No records exist
             logs_df = pd.DataFrame()
             warnings.warn(UserWarning("No old runs records given or unsupported type. It's OK if this is the first record or you will add later using from_csv or from_df. Otherwise, old records they will be overwritten"))
