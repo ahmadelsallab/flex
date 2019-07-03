@@ -20,7 +20,7 @@ pip install --upgrade git+https://github.com/ahmadelsallab/flex.git
 Or 
 ```
 git clone https://github.com/ahmadelsallab/flex.git
-cd ml_logger
+cd flex
 pip install .
 ```
 # Requirements
