@@ -40,31 +40,6 @@ class DataMgr:
     def append(self, df):
         self.df.append(df, ignore_index=True)
 
-class ConfigTypeMgr:
-    type_hndlr = {'csv'    :CSVConfig,
-                  'json'   :JSONConfig,
-                  'html'   :HTMLConfig,
-                  'pkl'    :PklConfig,
-                  'yml'    :YAMLConfig}
-    def __init(self):
-        pass
-
-    @classmethod
-    @abstractmethod
-    def save(cls, df: pd.DataFrame, file:str):
-        cls.type_hndlr[cls.check_file_type(file)].save(df, file)
-
-    @classmethod
-    @abstractmethod
-    def load(cls, file:str)-> pd.DataFrame:
-        return cls.type_hndlr[cls.check_file_type(file)].load(file)
-
-    @classmethod
-    @abstractmethod
-    def check_file_type(cls, file) -> str:
-        #TODO: Implement
-        return
-
 class PklConfig:
     @classmethod
     @abstractmethod
@@ -130,6 +105,33 @@ class YAMLConfig:
     def load(file: str) -> pd.DataFrame:
         with open(file, 'r') as f:
             return pd.DataFrame(yaml.load(f), index=[0])
+
+
+class ConfigTypeMgr:
+    type_hndlr = {'csv'    :CSVConfig,
+                  'json'   :JSONConfig,
+                  'html'   :HTMLConfig,
+                  'pkl'    :PklConfig,
+                  'yml'    :YAMLConfig}
+    def __init(self):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def save(cls, df: pd.DataFrame, file:str):
+        cls.type_hndlr[cls.check_file_type(file)].save(df, file)
+
+    @classmethod
+    @abstractmethod
+    def load(cls, file:str)-> pd.DataFrame:
+        return cls.type_hndlr[cls.check_file_type(file)].load(file)
+
+    @classmethod
+    @abstractmethod
+    def check_file_type(cls, file) -> str:
+        #TODO: Implement
+        return
+
 
 
 class Configuration:
