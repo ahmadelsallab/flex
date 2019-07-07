@@ -149,6 +149,9 @@ class Experiment:
             res = subprocess.call(['git', 'commit', '-am', tag])
             assert res == 0, 'Git command failed: ' + 'git commit -mTag'
 
+        #git tag <tag>
+        subprocess.call(['git', 'tag', tag])
+
         #git push -f origin <tag> <branch>:<branch>
 
         res = subprocess.call(['git', 'push', '-f', 'origin', tag, branch+':'+branch])
@@ -197,5 +200,3 @@ class Experiment:
 
         res = subprocess.call(['git', 'checkout', 'tags/'+tag])
         assert res==0, 'Git command failed: ' + 'git checkout tags/<tag>'
-
-
