@@ -156,30 +156,31 @@ print(experiment.config)
 from flex.config import Configuration
 
 # Load the old records
-experiment = Configuration(logs='results_old.csv')
+experiment = Configuration(logs='results.csv')
 
 # TODO: Perform your experiment
 
 # Now log the new experiment data
-meta_data = {'name': 'experiment_1',
-            'purpose': 'test my awesome model',
+meta_data = {'name': 'experiment_2',
+            'purpose': 'test another awesome model',
              'date': 'today',
             }
 
-config_params = {'model_arch': '100-100-100',
-          'learning_rate': 0.0001,
-          'epochs': 2,
-          'optimizer': 'Adam',
-         }
+config_params = {'model_arch': '200-200-200',
+                  'learning_rate': 0.0001,
+                  'epochs': 2,
+                  'optimizer': 'Adam',
+                 }
 
-results = {'val_acc': 0.95, 
+results = {'val_acc': 0.85, 
          'F1': 0.92,
-         'Comment': 'Best model'}
+         'Comment': '2nd Best model'}
 
 experiment.config = [meta_data, config_params, results]
 
 # Export the whole result
-experiment.save_logs('runs/results.csv')
+experiment.save_logs('results.csv')
+
 ```
 
 ### You can init an emtpy experiment, or with a certain csv, and add or change the old records csv.
@@ -193,13 +194,14 @@ from flex.config import Configuration
 experiment = Configuration() # or Experiment(csv_file="another_results.csv")
 
 # Update with old logs
-experiment.load_logs(file='runs/results_old.csv')
+experiment.load_logs(file='results.csv')
 
 # Load old config
-experiment.load_config(file='configs/config.json')
+experiment.load_config(file='config.json')
 
 # Now you can save new logs with the new experiment appended.
-experiment.save_logs(file='runs/results.csv')
+experiment.save_logs(file='results.csv')
+
 
 ```
 

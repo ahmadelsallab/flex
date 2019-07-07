@@ -43,7 +43,7 @@ class DataMgr:
         self.append(self.config)
 
     def append(self, df:pd.DataFrame):
-        self.df.append(df, ignore_index=True)
+        self.df = self.df.append(df, sort=False, ignore_index=True)
 
     def edit_config(self, attribs:dict):
 
@@ -80,7 +80,7 @@ class CSVConfig:
     @classmethod
     @abstractmethod
     def load(cls, file: str)-> pd.DataFrame:
-        return pd.read_csv(file)
+        return pd.read_csv(file, index_col=0)
 
 
 class JSONConfig:
@@ -88,12 +88,12 @@ class JSONConfig:
     @classmethod
     @abstractmethod
     def save(cls, df: pd.DataFrame, file: str):
-        df.to_json(file)
+        df.to_json(file, orient='index')
 
     @classmethod
     @abstractmethod
     def load(cls, file: str) -> pd.DataFrame:
-        return pd.read_json(file)
+        return pd.read_json(file, orient='index')
 
 
 class HTMLConfig:
@@ -150,16 +150,15 @@ class ConfigTypeMgr:
         return str(os.path.splitext(file)[1].split('.')[-1])
 
 
-
 class Configuration:
 
     def __init__(self, config=None, logs=None):
 
         # Load old runs
-        logs_df = self.process_logs(config)
+        logs_df = self.process_logs(logs)
 
         # Log config
-        config_df = self.process_config(logs)
+        config_df = self.process_config(config)
 
         # Update the DB
         self.data_mgr = DataMgr(logs=logs_df, config=config_df)
