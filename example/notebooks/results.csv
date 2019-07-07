@@ -1,0 +1,7 @@
+,name,purpose,date,model_arch,learning_rate,epochs,optimizer,val_acc,F1,Comment
+0,experiment_1,test my awesome model,today,100-100-100,0.0001,2,Adam,0.95,0.92,Best model
+1,experiment_19,test another awesome model,today,200-200-200,0.0001,2,Adam,0.85,0.92,2nd Best model
+2,experiment_19,test another awesome model,today,200-200-200,0.0001,2,Adam,0.85,0.92,2nd Best model
+3,experiment_19,test another awesome model,today,200-200-200,0.0001,2,Adam,0.85,0.92,2nd Best model
+4,experiment_2,test another awesome model,today,200-200-200,0.0001,2,Adam,0.85,0.92,2nd Best model
+5,experiment_2,test another awesome model,2019-07-07 14:30:41.150365,200-200-200,0.0001,2,Adam,0.85,0.92,2nd Best model
