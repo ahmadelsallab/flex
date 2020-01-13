@@ -31,7 +31,10 @@ pip install requirements.txt
 FLEX is a framework to organize the running of ML experiments, and make them reproducible, by tracking their configurations.
 The philosophy of FLEX is to keep the main components of an ML programs as re-usable plugins.
 
-# "Softly" enforce data science/machine learning process:
+# Encourage not enforce  
+
+_"Softly" integrate data science/machine learning process in the project __DNA___
+
 One of the goals of FLEX is to "softly" enforce DS/ML process:
 ![DS_Process](https://docs.google.com/drawings/d/e/2PACX-1vTdGMi9Aj51J5TGq6RbRqhkcJsZKTCIv5_oTlyQK2VvQDaW2ut3MSyokSa9PvN7CPSjWg56fTQX7415/pub?w=919&h=612)
 
