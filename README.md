@@ -31,6 +31,16 @@ pip install requirements.txt
 FLEX is a framework to organize the running of ML experiments, and make them reproducible, by tracking their configurations.
 The philosophy of FLEX is to keep the main components of an ML programs as re-usable plugins.
 
+# "Softly" enforce data science/machine learning process:
+One of the goals of FLEX is to "softly" enforce DS/ML process:
+![DS_Process](https://docs.google.com/drawings/d/e/2PACX-1vTdGMi9Aj51J5TGq6RbRqhkcJsZKTCIv5_oTlyQK2VvQDaW2ut3MSyokSa9PvN7CPSjWg56fTQX7415/pub?w=919&h=612)
+
+![Data_prep](https://docs.google.com/drawings/d/e/2PACX-1vQ55tSm-Fg9Jdq3ZLS08n6O9pEHiFqT1scIAaXsJXT0FEEQnNrum2QETyHYMfrH8_An8CmQ6_1VoGuP/pub?w=960&h=720)
+Which is official under [CRISP-DM](http://www.datascience-pm.com/crisp-dm-2/)
+
+![CRISP-DM-Official](http://www.datascience-pm.com/wp-content/uploads/2018/09/crisp-dm-wikicommons.jpg)
+
+# ML Experiment
 We define an ML Experiment to be composed of:
 - Data loaders: loading and generating the data.
 - Data pre-processors: data preparation and features processing. 
